@@ -1,0 +1,19 @@
+{
+  "version": "0.9",
+  "name": "Umshade",
+  "browser_action": {
+   "popup": "popup.html" 
+  },
+  "background": {
+  "scripts": ["background.js"]
+  },
+  "permissions": [
+    "tabs", "http://*/*" 
+  ],
+  "content_scripts": [
+     {
+      "matches": ["http://*/*"],
+      "js": ["jquery-1.8.2.min.js","localstorage.js","json2.js", "sjcl.js","test.js", "content_script.js"]
+    }
+  ]  
+}
