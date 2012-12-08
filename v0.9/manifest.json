@@ -2,6 +2,9 @@
   "version": "0.9",
   "name": "Umshade",
   "manifest_version": 1,
+      "launch": {
+      "web_url": "http://umshade.it/help.html"
+    },
   "browser_action": {
    "popup": "popup.html" 
   },

@@ -13,7 +13,7 @@ if (!localStorage['ran_before']) {
 }
 
   function onInstall() {
-  chrome.tabs.create({'url': chrome.extension.getURL('http://umshade.it/first-run.html')}, function(tab) {
+  chrome.tabs.create({'url': chrome.extension.getURL('help.html')}, function(tab) {
     // Tab opened.
   });
   }
