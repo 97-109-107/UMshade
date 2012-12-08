@@ -1,6 +1,7 @@
 {
   "version": "0.9",
   "name": "Umshade",
+  "manifest_version": 1,
   "browser_action": {
    "popup": "popup.html" 
   },
