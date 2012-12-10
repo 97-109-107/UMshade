@@ -1,12 +1,15 @@
 {
-  "version": "0.9",
+  "version": "0.91",
   "name": "Umshade",
-  "manifest_version": 1,
+  "icons": { "16": "icon16.png",
+           "48": "icon48.png",
+          "128": "icon128.png" },
+  "manifest_version": 2,
       "launch": {
       "web_url": "http://umshade.it/help.html"
     },
-  "browser_action": {
-   "popup": "popup.html" 
+	  "browser_action": {
+  "default_popup": "popup.html" 
   },
   "background": {
   "scripts": ["background.js"]
