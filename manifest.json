@@ -10,9 +10,15 @@
     },
 
   "browser_action": {
-   "default_icon": "img/icon48.png",            
-   "popup": "popup.html" 
+    "default_icon":  "img/icon48.png", // optional
+    "default_title": "Umshade",     // optional; shown in tooltip
+    "default_popup": "popup.html"    // optional
   },
+
+  // "browser_action": {
+  //  "default_icon": "img/icon48.png",            
+  //  "popup": "popup.html" 
+  // },
   "background": {
   "scripts": ["js/background.js"]
   },
@@ -36,12 +42,17 @@
     "font/vuca-webfont.woff"
   ],
   "permissions": [
-    "tabs", "http://*/*" 
+    "http://*.google.com/", // Refer to http://goo.gl/CPeqK http://goo.gl/U3Vev
+    "chrome://favicon/",
+    "clipboardRead", // document.execCommand('paste').
+    "clipboardWrite", // document.execCommand('copy' OR 'cut')
+    "tabs", // http://code.google.com/chrome/extensions/tabs.html +windows.html
+    "unlimitedStorage"
   ],
   "content_scripts": [
      {
       "matches": ["http://*/*"],
-      "js": ["js/jquery-1.8.2.min.js","js/localstorage.js","js/json2.js", "js/sjcl.js", "js/content_script.js"]
+      "js": ["js/jquery-1.8.2.min.js","js/localstorage.js","js/json2.js", "js/sjcl.js", "js/content_script.js","js/umshade.js"]
     }
   ]  
 }

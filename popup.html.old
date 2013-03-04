@@ -1,0 +1,158 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="js/sjcl.js"></script>
+<script type="text/javascript" src="js/json2.js"></script>
+<script type="text/javascript" src="js/localstorage.js"></script>
+<script type="text/javascript" src="js/umshade.js"></script>
+<link rel="stylesheet" type="text/css" href="skin.css">
+<script type="text/javascript">
+
+
+var toCrypt = '';
+var data = '';
+var dataEn = [];
+var dadeDe = [];
+var regex = /(?:ct":")(.*)"}/g; 
+var password = pid().toString()+pid().toString();
+var passphrase = '' // password + salt and iv;
+var prekey = '!?' 
+var keysep = ':::'
+var postkey = '?!' 
+var localstoragesep = '$$$'
+var once = true;
+var cyphertext = '';
+var decrypted ='';
+var detectedCyphers = [];
+var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
+chrome.tabs.getSelected(null,function(tab){
+   var port = chrome.tabs.connect(tab["id"]);
+      port.postMessage({command: "get"}); 
+      port.onMessage.addListener(function(msg){
+			          if(msg.type == "regexresult"){
+			        	  detectedCyphers = msg.value;
+			          }else{
+			          port.postMessage({command: "log", log:"entered the msg loop with msg.type: "+msg.type});
+	            		if(msg.type == "textarea" || msg.type == "input"){
+			                  //port.postMessage({command: "log", log: "textarea or input and msg.type is: "+msg.type});
+	            			  //we assume that the contents of the box are to be encrypted
+			                  data = msg.value
+			                  dataEn = JSON.parse(sjcl.encrypt(password, data));
+			                  var temppid = pid();
+			                  cyphertext = prekey + dataEn.ct + keysep + temppid + postkey;
+			                  passphrase = prekey + password + keysep + dataEn.iv + keysep + dataEn.salt + keysep + temppid + postkey;
+			                  $(document.getElementById('cypherOutput')).val(cyphertext);
+			                  // This will only happen on pressing the 'copy' button
+			                  //addToStorage(passphrase, cyphertext, data);
+			                  // diabled as it doesnt seem to work with facebook
+			                  //port.postMessage({command: "replace", id:msg.id, lookfor:msg.value, passphrase: passphrase, cypher: cyphertext});
+		               }else{
+				               //if whatever on the page appears to be a cyphertext 
+			            	   port.postMessage({command: "log", log:"entered the else as msg.type: "+msg.type});
+			            	   chrome.browserAction.setIcon({path: '/iconA.png'});
+				               var internal = 0;
+				               for(var i=0; i<=detectedCyphers.length; i++){
+				                  if(detectedCyphers[i].typeof != "undefined"){
+		                           decrypted = checkForPassword(detectedCyphers[i]);
+		                           if(decrypted != null){
+	                              var decryptResult = decrypt(detectedCyphers[i],decrypted).trim();
+	                              var KeyFinder = new RegExp(/:::([^!?]*)[!?]{2}/g);
+	                              var KeyFound = KeyFinder.exec(detectedCyphers[i]);
+	                              port.postMessage({command: "decrypt", lookfor: detectedCyphers[i], key: KeyFound[1], content: style[0]+decryptResult+style[1]});
+		                          }
+				                  }
+				              internal+=1;
+				              }
+				         }
+			          }
+          	   }
+   )
+});
+
+</script>
+</head>
+<body>
+    <div id="asd">pre-written</div>
+
+<table id="def" class="fixed">
+    <tr class="notHideable">
+        <td colspan="2">Share openly.<a href="#" class="tooltip"><img src="img/help.png"><SPAN>The field below shows the encrypted version of what you wrote. You can post it anywhere and be quite sure that third parties won't understand it. When you click the button you will copy the secret to your clipbaord.</SPAN></a></td>
+    </tr>
+    <tr class="notHideable">
+        <td colspan="2"><input type="text" class="cypher" value="Cypher will be shown here." id="cypherOutput"><button id="copybutton"  onclick="copyTextToClipboard(cyphertext);addToStorage(passphrase, cyphertext, data);clearInput('cypherOutput');">Copy secret</button></td>
+    </tr>
+	</table>
+   <!--------------------------> 
+	<table id="def" class="fixed">
+	<tr class="notHideable">
+	<td colspan="2">Pass privately.
+        <a href="#" class="tooltip"><img src="img/help.png">
+                <SPAN>This area displays snippets of the last five things you encrypted. Clicking the buttons will copy the password to the corresponding secret. You should send the the password through other channels than the secret — by e-mail for example.
+                </SPAN>
+        </a> 
+
+    </td>
+    </tr>
+	<script type="text/javascript">
+    var blurbs = getBlurbs();
+    var localPass = [];
+    var nRetrieve = '0';
+    if(blurbs.length<=4){
+        nRetrieve=blurbs.length;
+    }else{
+		nRetrieve=5;
+	}
+	// blurbs[i][2] is the timestamp 
+	blurbs.sort(sortMultiDimensional);
+	blurbs.reverse();
+    	for(var i=0; i<nRetrieve; i++){
+            if(blurbs[i][0]!=null){
+        		document.write("<tr class=\"notHideable\">");
+        		localPass.push(blurbs[i][1]);
+        		document.write("<td class=\"qoute\">"+blurbs[i][0].substring(0,15)+"…"+"</td>");
+        		document.write("<td>"+"<button id=\"copybutton\"  onclick=\"copyTextToClipboard(\'"+blurbs[i][1]+"\')\">"+"Copy password"+"</button>"+"</td>");
+        		document.write("</tr>");
+            }
+	}
+	</script> 
+    </table>
+	
+	<table id="def" class="fixed">
+	<tr class="notHideable">
+	<td colspan="2">Add a password you received.<a href="#" class="tooltip"><img src="img/help.png"><SPAN>When you receive passwords from other people, you can paste keys into the box and add them by clicking the button. Afterwards you will always be able to decrypt the corresponding secrets.</SPAN></a></td>
+	</tr>
+	<tr class="notHideable">
+	<td></td><td><input id="token"><button onclick="storePassphrase($('#token').val());clearInput('token');">Add password</button></td>
+	</tr>
+	
+</table>
+	
+	<table id="noBack" class="fixed">
+	<tr class="hideable">
+	<td><button onclick="alert(log())">show passphrases</button>
+	<button onclick="clearStrg();">clear passphrases</button></td><td>
+	<button onclick="showDetected();">show detected cyphers</button>
+	<button onclick="alert(getBlurbs());">show stored blurbs+passes </button>
+	</td></tr>
+	</table>
+	
+
+	<script type="text/javascript">
+	var optionsHidden=true;
+	var rows = $('table.fixed tr');
+	var hideable = rows.filter('.hideable');
+	$('#toggleOptions').click(function() {
+		if(optionsHidden==true){
+			hideable.show();
+			optionsHidden=false;
+		}else{
+			hideable.hide();
+			optionsHidden=true;
+		}
+	});
+	</script>
+    <script type="text/javascript" src="js/umshade.js"></script>
+
+</body>
+</html>

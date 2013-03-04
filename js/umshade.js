@@ -88,6 +88,13 @@ function copyTextToClipboard(text) {
 }
 
 $('#toggleOptions').click(function() {
+    if(optionsHidden==true){
+      hideable.show();
+      optionsHidden=false;
+    }else{
+      hideable.hide();
+      optionsHidden=true;
+    }
   });
   
 $(document).keyup(function(event){
