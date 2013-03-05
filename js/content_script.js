@@ -34,7 +34,7 @@ chrome.extension.onConnect.addListener(function(port) {
 		  if(msg["command"] == "replace"){
 			  console.log("got a call to replace with "+msg.cypher+" at "+msg.id +" or "+msg.lookfor+ ' key is: '+msg.passphrase);
 		  }
-		  if(msg["command"] == "fetch_encrypted"){
+		  if(msg["command"] == "fetch_body"){
 		  	console.log(msg.command);
 		  	port.postMessage({
 		  		type:"body",

@@ -13,14 +13,27 @@ var once = true;
 var cyphertext = '';
 var decrypted ='';
 var detectedCyphers = [];
-var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
 var body =""
+var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
 
-function awesome() {
+// handle clicks and popup events
+document.addEventListener('DOMContentLoaded', function () {
+  // once the popup is loaded, fetch the websites contents
+  window.onload = function () {
+    browserActionPressEvent();
+    // port.postMessage({command: "log",log:"test"}); 
+    chrome.tabs.connect(tab["id"]).postMessage({command: "log",log:"test"}); 
+  }
+  document.querySelector('button').addEventListener('click', clickHandler);
+  main();
+});
+
+function browserActionPressEvent() {
+var port = chrome.tabs.connect({name: "knockknock"});
  chrome.tabs.getSelected(null,function(tab){
    var port = chrome.tabs.connect(tab["id"]);
-      port.postMessage({command: "get"}); 
-      port.postMessage({command: "fetch_encrypted"}); 
+      // port.postMessage({command: "get"}); 
+      port.postMessage({command: "fetch_body"}); 
       port.onMessage.addListener(function(msg){
                 if(msg.type == "body"){
                   body = msg.value;
@@ -45,26 +58,19 @@ function clickHandler(e) {
 }
 
 function main() {
-  test = "val2";
 }
 
-// Add event listeners once the DOM has fully loaded by listening for the
-// `DOMContentLoaded` event on the document, and adding your listeners to
-// specific elements when it triggers.
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelector('button').addEventListener('click', clickHandler);
-  main();
-});
-  // HELPERS 
-function pid()
-{
-    var S4 = function ()
-    {
+
+
+
+
+// HELPERS 
+function pid(){
+    var S4 = function (){
         return Math.floor(
                 Math.random() * 0x10000 /* 65536 */
             ).toString(16);
     };
-    return (
+    return(
             S4()+S4() 
-        );
-}
+);}
