@@ -14,9 +14,10 @@ var cyphertext = '';
 var decrypted ='';
 var detectedCyphers = [];
 var body =""
-var bodyRegExp = /(\!\?\S*\?\!)/g; // checks for occurence of cypher-lookalikes
+var bodyRegExp = /\!\?\S*\?\!/gm; // checks for occurence of cypher-lookalikes
 var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
 var port;
+var emulatedLocalStorage = ["!?this:::ihave?!"];
 
 // handle clicks and popup events
 document.addEventListener('DOMContentLoaded', function () {
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function filterBody(innerbody){
-   var array = bodyRegExp.exec(innerbody);
+   var array = innerbody.match(bodyRegExp);
    return array; 
 }
 
