@@ -35,7 +35,6 @@ chrome.extension.onConnect.addListener(function(port) {
 			  console.log("got a call to replace with "+msg.cypher+" at "+msg.id +" or "+msg.lookfor+ ' key is: '+msg.passphrase);
 		  }
 		  if(msg["command"] == "fetch_body"){
-		  	console.log(msg.command);
 		  	port.postMessage({
 		  		type:"body",
 		  		value:document.body.innerText
@@ -49,7 +48,7 @@ chrome.extension.onConnect.addListener(function(port) {
 				  console.log("pattern is: "+ pattern);
 		  }
 		  if(msg["command"] == "log"){
-			  console.log(": "+msg.log);
+			  console.log(msg.log);
 		  }
 	});
 });

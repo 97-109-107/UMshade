@@ -14,55 +14,50 @@ var cyphertext = '';
 var decrypted ='';
 var detectedCyphers = [];
 var body =""
+var bodyRegExp = /(\!\?\S*\?\!)/g; // checks for occurence of cypher-lookalikes
 var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
+var port;
 
 // handle clicks and popup events
 document.addEventListener('DOMContentLoaded', function () {
-  // once the popup is loaded, fetch the websites contents
-  window.onload = function () {
-    browserActionPressEvent();
-    // port.postMessage({command: "log",log:"test"}); 
-    chrome.tabs.connect(tab["id"]).postMessage({command: "log",log:"test"}); 
+  window.onload = function(){
+    // open communication
+    chrome.tabs.getSelected(null,function(tab){
+      port = chrome.tabs.connect(tab["id"]);
+
+      // the popup is loaded == the button has been clicked so, fetch the websites contents
+      browserActionPressEvent();
+
+      //handle listening
+      port.onMessage.addListener(function(msg){
+        if(msg.type == "body"){
+          var detectedCyphers = filterBody(msg.value);
+          log(detectedCyphers);
+        }
+      });
+    })
   }
   document.querySelector('button').addEventListener('click', clickHandler);
   main();
 });
 
-function browserActionPressEvent() {
-var port = chrome.tabs.connect({name: "knockknock"});
- chrome.tabs.getSelected(null,function(tab){
-   var port = chrome.tabs.connect(tab["id"]);
-      // port.postMessage({command: "get"}); 
-      port.postMessage({command: "fetch_body"}); 
-      port.onMessage.addListener(function(msg){
-                if(msg.type == "body"){
-                  body = msg.value;
-                  var myRe = /(\!\?\S*\?\!)/g;
-                  var myArray = myRe.exec(body);
-                  port.postMessage({command: "log",log:body}); 
-                  port.postMessage({command: "log",log:myArray}); 
-               }else{
-                // alert(prekey);
-               }
-
-            }
-        )
-    })}
-
-function awesomeTask() {
-  awesome();
+function filterBody(innerbody){
+   var array = bodyRegExp.exec(innerbody);
+   return array; 
 }
 
+function browserActionPressEvent() {
+      port.postMessage({command: "fetch_body"}); 
+};
+
+/*function awesomeTask() {
+  awesome();
+}
 function clickHandler(e) {
   setTimeout(awesomeTask, 1000);
 }
-
 function main() {
-}
-
-
-
-
+}*/
 
 // HELPERS 
 function pid(){
@@ -74,3 +69,7 @@ function pid(){
     return(
             S4()+S4() 
 );}
+
+function log(arg){
+    port.postMessage({command:"log", log: arg});
+}
