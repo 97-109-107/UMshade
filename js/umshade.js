@@ -1,14 +1,61 @@
-$(document).ready(function() {
-  $('.hideable').hide();
-// alert("dsda");
-  // innerHTML("New text");
-// document.write("from outside");
-// document.write("from outside");
+var toCrypt = '';
+var data = '';
+var dataEn = [];
+var dadeDe = [];
+var regex = /(?:ct":")(.*)"}/g; 
+var password = pid().toString()+pid().toString();
+var passphrase = '' // password + salt and iv;
+var prekey = '!?' 
+var keysep = ':::'
+var postkey = '?!' 
+var localstoragesep = '$$$'
+var once = true;
+var cyphertext = '';
+var decrypted ='';
+var detectedCyphers = [];
+var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
+var body =""
 
+function awesome() {
+ chrome.tabs.getSelected(null,function(tab){
+   var port = chrome.tabs.connect(tab["id"]);
+      port.postMessage({command: "get"}); 
+      port.postMessage({command: "fetch_encrypted"}); 
+      port.onMessage.addListener(function(msg){
+                if(msg.type == "body"){
+                  body = msg.value;
+                  var myRe = /(\!\?\S*\?\!)/g;
+                  var myArray = myRe.exec(body);
+                  port.postMessage({command: "log",log:body}); 
+                  port.postMessage({command: "log",log:myArray}); 
+               }else{
+                // alert(prekey);
+               }
+
+            }
+        )
+    })}
+
+function awesomeTask() {
+  awesome();
+}
+
+function clickHandler(e) {
+  setTimeout(awesomeTask, 1000);
+}
+
+function main() {
+  test = "val2";
+}
+
+// Add event listeners once the DOM has fully loaded by listening for the
+// `DOMContentLoaded` event on the document, and adding your listeners to
+// specific elements when it triggers.
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelector('button').addEventListener('click', clickHandler);
+  main();
 });
-  // document.getElementById('tag-id').innerHTML = '<ol><li>html data</li></ol>';
-
-
+  // HELPERS 
 function pid()
 {
     var S4 = function ()
@@ -21,93 +68,3 @@ function pid()
             S4()+S4() 
         );
 }
-function clearInput(id){
-  $(document.getElementById(id)).val('');
-}
-function sortMultiDimensional(a,b)
-{
-    // for instance, this will sort the array using the second element    
-    return ((a[2] < b[2]) ? -1 : ((a[2] > b[2]) ? 1 : 0));
-}
-function decrypt(zcyphertext, zpassphrase){
-    var tempCt = zcyphertext.substring(prekey.length,zcyphertext.length-postkey.length);
-    var tempPph = zpassphrase.substring(prekey.length,zpassphrase.length-postkey.length-2);
-       tempPph = tempPph.split(keysep);
-       tempCt = tempCt.split(keysep);
-        var j = '{'+ 
-      "\"iv\"" +':'  +"\"" +tempPph[1] +"\","+
-      "\"salt\""  +':'  +"\"" +tempPph[2]    +"\","+
-      "\"ct\"" +':'  +"\"" +tempCt[0]     +"\""+
-      '}';
-      try{
-       var r = sjcl.decrypt(tempPph[0], j);
-       return r;
-      }catch(err){
-        
-      }
-       
-}
-function checkForPassword(zcyphertext){
-    var tempCt = zcyphertext.substring(prekey.length,zcyphertext.length-postkey.length);
-   tempCt = tempCt.split(keysep);
-   var passFromStorage = getItem(tempCt[1]);
-   if(passFromStorage!=null){
-        var r = passFromStorage.split('%%%'); 
-        return r[0];
-   }
-}
-function showDetected(){
-   alert(detectedCyphers);
-}
-function addToStorage(zpassphrase, zcyphertext, zblurb){ 
-      var ts = Math.round((new Date()).getTime() / 1000);
-    var sep = '%%%';
-    var temp = zpassphrase.substring(prekey.length,zpassphrase.length-postkey.length).split(keysep);
-    var temp2 =zpassphrase+sep+zcyphertext+sep+zblurb+sep+ts;
-    setItem(temp[3], temp2);
-}
-
-function storePassphrase(arg){
-    var sep = '%%%';
-    var temp = arg.substring(prekey.length,arg.length-postkey.length).split(keysep);
-    var temp2 =arg+sep+"dummy"+sep+"dummy"+sep+"dummy";
-    setItem(temp[3], temp2);
-}
-
-function clearPassphrases(){
-   clearStrg()
-}
-
-function copyTextToClipboard(text) {
-    var copyFrom = $('<textarea/>');
-    copyFrom.text(text);
-    $('body').append(copyFrom);
-    copyFrom.select();
-    document.execCommand('copy');
-    copyFrom.remove();
-}
-
-$('#toggleOptions').click(function() {
-    if(optionsHidden==true){
-      hideable.show();
-      optionsHidden=false;
-    }else{
-      hideable.hide();
-      optionsHidden=true;
-    }
-  });
-  
-$(document).keyup(function(event){
-    if(event.keyCode!='111'){
-      if(optionsHidden==true){
-      hideable.show();
-      optionsHidden=false;
-    }else{
-      hideable.hide();
-      optionsHidden=true;
-    }
- }
-});
-// $(document.getElementById('cypherOutput')).val(cyphertext);
-// document.getElementById("asd").value = '<ol><li>html data</li></ol>';
-
