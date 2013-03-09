@@ -45,10 +45,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   // document.querySelector('#parse').addEventListener('click', clickHandler);
   document.querySelector('#grabInput').addEventListener('click', grabInput);
+  document.querySelector('#showLocalStorage').addEventListener('click', showLocalStorage);
+  document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
   // document.querySelector('button').addEventListener('click', clickHandler);
   // main();
 });
 
+function showLocalStorage(){
+  log('showLocalStorage fired');
+  log(showBlurbs);
+}
+function showBlurbs(){
+  log('showBlurbs fired');
+  log(getBlurbs());
+}
+function addToStorage(zpassphrase, zcyphertext, zblurb){ 
+      var ts = Math.round((new Date()).getTime() / 1000);
+    var sep = '%%%';
+    var temp = zpassphrase.substring(prekey.length,zpassphrase.length-postkey.length).split(keysep);
+    var temp2 =zpassphrase+sep+zcyphertext+sep+zblurb+sep+ts;
+    setItem(temp[3], temp2);
+}
 function encrypt(value){
   log("encryption fired");
   data = value; 
@@ -57,6 +74,7 @@ function encrypt(value){
   var temppid = pid();
   cyphertext = prekey + dataEn.ct + keysep + temppid + postkey;
   passphrase = prekey + password + keysep + dataEn.iv + keysep + dataEn.salt + keysep + temppid + postkey;
+  addToStorage(passphrase, cyphertext, data);
   log(passphrase);
   // $(document.getElementById('cypherOutput')).val(cyphertext);
 }

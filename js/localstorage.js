@@ -46,7 +46,7 @@
     log('cleared');
   }
 
-  function log() {
+  function localStorageLog() {
 	  var templog = [];
 	  for (i=0; i<=localStorage.length-1; i++)  
 	    {  
