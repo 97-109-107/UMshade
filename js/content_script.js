@@ -23,8 +23,8 @@ for (var i = 0; i < el.length; i++) {
 	 
 chrome.extension.onConnect.addListener(function(port) {
 	port.onMessage.addListener(function(msg) {
-		  if(msg["command"] == "get"){
-				console.log("got a call to get selection/box. Type is "+document.activeElement.type);
+		  if(msg["command"] == "grabInput"){
+				// console.log("got a call to get selection/box. Type is "+document.activeElement.type);
 	  	  		port.postMessage({
 	  	  			type: document.activeElement.type, 
 	  	  			id:document.activeElement.id.toString(),

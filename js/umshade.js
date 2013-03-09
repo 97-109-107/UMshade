@@ -35,12 +35,31 @@ document.addEventListener('DOMContentLoaded', function () {
           var detectedCyphers = filterBody(msg.value);
           log(detectedCyphers);
         }
+        // OR INPUT??
+        if(msg.type == "textarea"){
+          log("grabbed value:"+msg.value+" - and selection:"+msg.selection+" - from: "+msg.id);
+          encrypt(msg.value);
+        }
       });
     })
   }
-  document.querySelector('button').addEventListener('click', clickHandler);
-  main();
+  // document.querySelector('#parse').addEventListener('click', clickHandler);
+  document.querySelector('#grabInput').addEventListener('click', grabInput);
+  // document.querySelector('button').addEventListener('click', clickHandler);
+  // main();
 });
+
+function encrypt(value){
+  log("encryption fired");
+  data = value; 
+  dataEn = JSON.parse(sjcl.encrypt(password, data));
+  // dataEn = sjcl.encrypt(password, data);
+  var temppid = pid();
+  cyphertext = prekey + dataEn.ct + keysep + temppid + postkey;
+  passphrase = prekey + password + keysep + dataEn.iv + keysep + dataEn.salt + keysep + temppid + postkey;
+  log(passphrase);
+  // $(document.getElementById('cypherOutput')).val(cyphertext);
+}
 
 function filterBody(innerbody){
    var array = innerbody.match(bodyRegExp);
@@ -49,16 +68,18 @@ function filterBody(innerbody){
 
 function browserActionPressEvent() {
       port.postMessage({command: "fetch_body"}); 
+      // get textarea textbox for encryption
 };
 
-/*function awesomeTask() {
-  awesome();
+// function awesomeTask() {
+//   awesome();
+// }
+function grabInput(e) {
+  // setTimeout(awesomeTask, 1000);
+  port.postMessage({command: "grabInput"}); 
 }
-function clickHandler(e) {
-  setTimeout(awesomeTask, 1000);
-}
-function main() {
-}*/
+// function main() {
+// }
 
 // HELPERS 
 function pid(){

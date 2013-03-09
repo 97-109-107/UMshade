@@ -20,7 +20,7 @@
   //  "popup": "popup.html" 
   // },
   "background": {
-  "scripts": ["js/background.js"]
+  "scripts": ["js/background.js","js/json2.js","js/sjcl.js"]
   },
   "web_accessible_resources": [
     "img/help.png",
@@ -42,7 +42,7 @@
     "font/vuca-webfont.woff"
   ],
   "permissions": [
-    "http://*.google.com/", // Refer to http://goo.gl/CPeqK http://goo.gl/U3Vev
+    "http://*.*/", // Refer to http://goo.gl/CPeqK http://goo.gl/U3Vev
     "chrome://favicon/",
     "clipboardRead", // document.execCommand('paste').
     "clipboardWrite", // document.execCommand('copy' OR 'cut')
