@@ -58,20 +58,21 @@ for (var i = arr.length - 1; i >= 0; i--) {
   log("arr at "+i+" has "+arr[i]);
 };
 //try decrypting each with elements from localstorage, already parsed back into objects
-knownDecryptionObjects = listAllItems(false);
+knownDecryptionObjects = listAllItems(true);
 for (var i = knownDecryptionObjects.length - 1; i >= 0; i--) {
   try{
-    // log(knownDecryptionObjects[i]);
-    var localPass = JSON.parse(knownDecryptionObjects[i]).password;
-    log("testing: "+knownDecryptionObjects[i]+" with password "+ localPass);
-    // var clearText = sjcl.decrypt(arr[6],knownDecryptionObjects[i]);
-    var clearText = sjcl.decrypt(localPass,knownDecryptionObjects[i]);
-    // var clearText = sjcl.decrypt(arr[5], knownDecryptionObjects[i]);
+    // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
+    knownDecryptionObjects[i].ct = arr[11];
+    log("inserted");
+    var stringifiedEncryptionObject = JSON.stringify(knownDecryptionObjects[i]);
+    log(stringifiedEncryptionObject);
+    log("stringified again")
+    var clearText = sjcl.decrypt(knownDecryptionObjects[i].password, stringifiedEncryptionObject);
+    log("attempted decrypiton");
     log("decrypted!: "+clearText);
   }catch(e){
     log("apparently no match because: "+ JSON.stringify(e));
   }
-
   // knownDecryptionObjects[i];
 };
 }
@@ -80,7 +81,7 @@ function encrypt(value){
   dataEn = JSON.parse(sjcl.encrypt(password, value));
   cyphertext = prekey + dataEn.ct + postkey;
   // removing the cyphertext prior to serialization so it actually makes sense to share
-  // delete dataEn.ct;
+  delete dataEn.ct;
   // adding the password which is generated from the pid
   dataEn.password = password;
 
@@ -129,6 +130,9 @@ function pid(){
             S4()+S4() 
 );}
 
+function debug(arg){
+    port.postMessage({command:"debug", log: arg});
+}
 function log(arg){
     port.postMessage({command:"log", log: arg});
 }

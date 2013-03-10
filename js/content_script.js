@@ -50,5 +50,8 @@ chrome.extension.onConnect.addListener(function(port) {
 		  if(msg["command"] == "log"){
 			  console.log(msg.log);
 		  }
+		  if(msg["command"] == "debug"){
+			  console.debug(msg.log);
+		  }
 	});
 });
