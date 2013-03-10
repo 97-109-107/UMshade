@@ -61,9 +61,9 @@ for(var x = cyphertextsFromBody.length - 1; x >= 0; x--) {
 //will try decrypting each with from localstorage, already parsed back into objects
 storedDecryptionObjects = listAllItems(true);
 for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
-  try{
     // test agains all known elements
     for (var c = cyphertextsFromBody.length - 1; c >= 0; c--){
+  try{
     // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
     storedDecryptionObjects[i].ct = cyphertextsFromBody[c];
     // turning it back into a json so the sjcl can handle it further
@@ -71,8 +71,8 @@ for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
 
     var decryptionResult = sjcl.decrypt(storedDecryptionObjects[i].password, tempJsonEncryptionDetails);
     log("decryptionResult: "+decryptionResult);
-    };
   }catch(e){
+    };
 
   }
 };

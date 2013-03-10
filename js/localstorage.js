@@ -15,7 +15,8 @@ function listAllItems(parsed){
 // Store item in local storage:
   function setItem(key, value){
     try {
-      window.localStorage.removeItem(key);      // <-- Local storage!
+      // window.localStorage.removeItem(key);      // <-- Local storage!
+      // log("duplicate key?");
       window.localStorage.setItem(key, value);  // <-- Local storage!
     } catch(e) {
       log("Error inside setItem");
