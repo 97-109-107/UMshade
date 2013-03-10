@@ -1,9 +1,15 @@
-function listAllItems(){  
+function listAllItems(parsed){  
+  var r=[];
     for (i=0; i<=localStorage.length-1; i++)  
     {  
         key = localStorage.key(i);  
-        log(localStorage.getItem(key));
+        if (parsed==true){
+          r.push(JSON.parse(localStorage.getItem(key)));
+        }else{
+          r.push(localStorage.getItem(key));
+        }
     }  
+    return r;
 }
 
 // Store item in local storage:
