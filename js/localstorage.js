@@ -1,14 +1,20 @@
+function listAllItems(){  
+    for (i=0; i<=localStorage.length-1; i++)  
+    {  
+        key = localStorage.key(i);  
+        log(localStorage.getItem(key));
+    }  
+}
+
 // Store item in local storage:
-  function setItem(key, value) {
+  function setItem(key, value){
     try {
-      //alert("Storing [" + key + ":" + value + "]");
-      //window.localStorage.removeItem(key);      // <-- Local storage!
+      window.localStorage.removeItem(key);      // <-- Local storage!
       window.localStorage.setItem(key, value);  // <-- Local storage!
     } catch(e) {
       log("Error inside setItem");
       log(e);
     }
-    log("Return from setItem" + key + ":" +  value);
   }
 
   // Gets item from local storage with specified key.

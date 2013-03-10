@@ -5,16 +5,19 @@ var dadeDe = [];
 var regex = /(?:ct":")(.*)"}/g; 
 var password = pid().toString()+pid().toString();
 var passphrase = '' // password + salt and iv;
-var prekey = '!?' 
-var keysep = ':::'
-var postkey = '?!' 
+var prekey = '--Message encrypted with Umshade---'
+// var keysep = ':::'
+var postkey = '---learn why on umshade.it---'
 var localstoragesep = '$$$'
 var once = true;
 var cyphertext = '';
 var decrypted ='';
 var detectedCyphers = [];
 var body =""
-var bodyRegExp = /\!\?\S*\?\!/gm; // checks for occurence of cypher-lookalikes
+// var bodyRegExp = /\!\?\S*\?\!/gm; // checks for occurence of cypher-lookalikes
+// var bodyRegExp = /\/prekey/gm; // checks for occurence of cypher-lookalikes
+// var bodyRegExp = new RegExp(prekey+'/\S*/'+postkey,'g'); // checks for occurence of cypher-lookalikes
+var bodyRegExp = new RegExp(prekey+'.*'+postkey,'g'); // checks for occurence of cypher-lookalikes
 var style=["<font STYLE=\"background-color: #E0FFE2; padding-left:2px; padding-right:2px;\">","</font>"];
 var port;
 var emulatedLocalStorage = ["!?this:::ihave?!"];
@@ -52,30 +55,25 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function showLocalStorage(){
-  log('showLocalStorage fired');
-  log(showBlurbs);
+  log(listAllItems());
+  // log(showBlurbs);
 }
-function showBlurbs(){
-  log('showBlurbs fired');
-  log(getBlurbs());
-}
-function addToStorage(zpassphrase, zcyphertext, zblurb){ 
-      var ts = Math.round((new Date()).getTime() / 1000);
-    var sep = '%%%';
-    var temp = zpassphrase.substring(prekey.length,zpassphrase.length-postkey.length).split(keysep);
-    var temp2 =zpassphrase+sep+zcyphertext+sep+zblurb+sep+ts;
-    setItem(temp[3], temp2);
-}
+
 function encrypt(value){
-  log("encryption fired");
-  data = value; 
-  dataEn = JSON.parse(sjcl.encrypt(password, data));
-  // dataEn = sjcl.encrypt(password, data);
-  var temppid = pid();
-  cyphertext = prekey + dataEn.ct + keysep + temppid + postkey;
-  passphrase = prekey + password + keysep + dataEn.iv + keysep + dataEn.salt + keysep + temppid + postkey;
-  addToStorage(passphrase, cyphertext, data);
-  log(passphrase);
+  dataEn = JSON.parse(sjcl.encrypt(password, value));
+  cyphertext = prekey + dataEn.ct + postkey;
+  // removing the cyphertext prior to serialization so it actually makes sense to share
+  delete dataEn.ct;
+  // adding the password which is generated from the pid
+  dataEn.password = password;
+  // this is to stored/exchanged
+  stringifiedEncryptionObject = JSON.stringify(dataEn);
+
+  log(dataEn);
+  log(cyphertext);
+
+  setItem(dataEn.password, stringifiedEncryptionObject);
+  // TODO set the box with the cyphertext, copy to clipboard
   // $(document.getElementById('cypherOutput')).val(cyphertext);
 }
 
