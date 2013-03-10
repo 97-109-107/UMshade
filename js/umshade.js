@@ -63,13 +63,11 @@ for (var i = knownDecryptionObjects.length - 1; i >= 0; i--) {
   try{
     // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
     knownDecryptionObjects[i].ct = arr[11];
-    log("inserted");
-    var stringifiedEncryptionObject = JSON.stringify(knownDecryptionObjects[i]);
-    log(stringifiedEncryptionObject);
-    log("stringified again")
-    var clearText = sjcl.decrypt(knownDecryptionObjects[i].password, stringifiedEncryptionObject);
-    log("attempted decrypiton");
-    log("decrypted!: "+clearText);
+    // turning it back into a Json so the scjl can handle it further
+    var tempJsonEncryptionDetails = JSON.stringify(knownDecryptionObjects[i]);
+
+    var decryptionResult = sjcl.decrypt(knownDecryptionObjects[i].password, tempJsonEncryptionDetails);
+    log("decryptionResult: "+decryptionResult);
   }catch(e){
     log("apparently no match because: "+ JSON.stringify(e));
   }
