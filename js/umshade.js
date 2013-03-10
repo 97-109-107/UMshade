@@ -51,27 +51,30 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#clearStrg').addEventListener('click', clearStrg);
 });
 
-function decrypt(arr){
+function decrypt(cyphertextsFromBody){
+//TODO merge the loops into one
 //trimming the cyphertext indentifiers
-for (var i = arr.length - 1; i >= 0; i--) {
-  arr[i]=arr[i].substring(prekey.length, arr[i].length-postkey.length);
-  log("arr at "+i+" has "+arr[i]);
+for(var x = cyphertextsFromBody.length - 1; x >= 0; x--) {
+  cyphertextsFromBody[x]=cyphertextsFromBody[x].substring(prekey.length, cyphertextsFromBody[x].length-postkey.length);
 };
-//try decrypting each with elements from localstorage, already parsed back into objects
-knownDecryptionObjects = listAllItems(true);
-for (var i = knownDecryptionObjects.length - 1; i >= 0; i--) {
-  try{
-    // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
-    knownDecryptionObjects[i].ct = arr[11];
-    // turning it back into a Json so the scjl can handle it further
-    var tempJsonEncryptionDetails = JSON.stringify(knownDecryptionObjects[i]);
 
-    var decryptionResult = sjcl.decrypt(knownDecryptionObjects[i].password, tempJsonEncryptionDetails);
+//will try decrypting each with from localstorage, already parsed back into objects
+storedDecryptionObjects = listAllItems(true);
+for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
+  try{
+    // test agains all known elements
+    for (var c = cyphertextsFromBody.length - 1; c >= 0; c--){
+    // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
+    storedDecryptionObjects[i].ct = cyphertextsFromBody[c];
+    // turning it back into a json so the sjcl can handle it further
+    var tempJsonEncryptionDetails = JSON.stringify(storedDecryptionObjects[i]);
+
+    var decryptionResult = sjcl.decrypt(storedDecryptionObjects[i].password, tempJsonEncryptionDetails);
     log("decryptionResult: "+decryptionResult);
+    };
   }catch(e){
-    log("apparently no match because: "+ JSON.stringify(e));
+
   }
-  // knownDecryptionObjects[i];
 };
 }
 
