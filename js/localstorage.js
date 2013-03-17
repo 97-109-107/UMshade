@@ -40,14 +40,13 @@ function listAllItems(parsed){
   }
   function getBlurbs(){
 	// returns the past messages that were encrypted and the keys to them
-	  log('Retrieving blurbs that don\'t match '+prekey);
 	  var templog = [];
 	  for(i=0; i<=localStorage.length-1; i++){  
 	        key = localStorage.key(i);  
-	        var blurb = localStorage.getItem(key).split('%%%');
-	        if(blurb[3]!="dummy" && blurb[3]!=null){
-	        	templog.push([blurb[2],blurb[0],blurb[3]]);
-	        }
+	        var blurb = JSON.parse(localStorage.getItem(key)).blurb
+			//if(blurb[3]!="dummy" && blurb[3]!=null){
+                templog.push(blurb);
+			//}
 	    }
 	  return templog;
   }

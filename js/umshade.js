@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
       port.onMessage.addListener(function(msg){
         if(msg.type == "body"){
           var detectedCyphers = filterBody(msg.value);
-          log(detectedCyphers);
-          decrypt(detectedCyphers);
-        }
+          //log(detectedCyphers);
+          //decrypt(detectedCyphers);
+    }
         // OR INPUT??
         if(msg.type == "textarea"){
           log("grabbed value:"+msg.value+" - and selection:"+msg.selection+" - from: "+msg.id);
@@ -49,7 +49,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#grabInput').addEventListener('click', grabInput);
   document.querySelector('#showLocalStorage').addEventListener('click', showLocalStorage);
   document.querySelector('#clearStrg').addEventListener('click', clearStrg);
+  document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
 });
+
+function showBlurbs(){
+    log(getBlurbs());
+}
 
 function decrypt(cyphertextsFromBody){
 //TODO merge the loops into one
@@ -85,6 +90,7 @@ function encrypt(value){
   delete dataEn.ct;
   // adding the password which is generated from the pid
   dataEn.password = password;
+  dataEn.blurb = value.substring(0,25);
 
   // this is to stored/exchanged
   stringifiedEncryptionObject = JSON.stringify(dataEn);

@@ -6,12 +6,54 @@
     <script src="js/localstorage.js"></script>
     <script src="js/json2.js"></script>
     <script src="js/umshade.js"></script>
+<link rel="stylesheet" type="text/css" href="skin.css">
   </head>
-  <body>
-    <!-- <button id="parse">parse</button> -->
+<body>
     <button id="grabInput">copy</button>
     <button id="showLocalStorage">show ls</button>
     <button id="clearStrg">Clear ls</button>
-    <!-- <button id="showBlurbs">show blurbs</button> -->
-  </body>
-</html>
+    <button id="showBlurbs">showBlurbs</button>
+    
+
+<table id="def" class="fixed">
+    <tr class="notHideable">
+        <td colspan="2">Share openly.<a href="#" class="tooltip"><img src="img/help.png"><SPAN>The field below shows the encrypted version of what you wrote. You can post it anywhere and be quite sure that third parties won't understand it. When you click the button you will copy the secret to your clipbaord.</SPAN></a></td>
+    </tr>
+    <tr class="notHideable">
+        <td colspan="2"><input type="text" class="cypher" value="Cypher will be shown here." id="cypherOutput"><button id="copybutton"  onclick="copyTextToClipboard(cyphertext);addToStorage(passphrase, cyphertext, data);clearInput('cypherOutput');">Copy secret</button></td>
+    </tr>
+	</table>
+	<table id="def" class="fixed">
+	<tr class="notHideable">
+	<td colspan="2">Pass privately.
+        <a href="#" class="tooltip"><img src="img/help.png">
+                <SPAN>This area displays snippets of the last five things you encrypted. Clicking the buttons will copy the password to the corresponding secret. You should send the the password through other channels than the secret  by e-mail for example.
+                </SPAN>
+        </a> 
+
+    </td>
+    </tr>
+	
+    </table>
+	
+	<table id="def" class="fixed">
+	<tr class="notHideable">
+	<td colspan="2">Add a password you received.<a href="#" class="tooltip"><img src="img/help.png"><SPAN>When you receive passwords from other people, you can paste keys into the box and add them by clicking the button. Afterwards you will always be able to decrypt the corresponding secrets.</SPAN></a></td>
+	</tr>
+	<tr class="notHideable">
+	<td></td><td><input id="token"><button onclick="storePassphrase($('#token').val());clearInput('token');">Add password</button></td>
+	</tr>
+	
+</table>
+	
+	<table id="noBack" class="fixed">
+	<tr class="hideable">
+	<td><button onclick="alert(log())">show passphrases</button>
+	<button onclick="clearStrg();">clear passphrases</button></td><td>
+	<button onclick="showDetected();">show detected cyphers</button>
+	<button onclick="alert(getBlurbs());">show stored blurbs+passes </button>
+	</td></tr>
+	</table>
+	
+
+</body></html>
