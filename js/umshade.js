@@ -34,8 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
       //handle listening
       port.onMessage.addListener(function(msg){
         if(msg.type == "body"){
-          var detectedCyphers = filterBody(msg.value);
-          //log(detectedCyphers);
+          detectedCyphers = filterBody(msg.value);
           //decrypt(detectedCyphers);
     }
         // OR INPUT??
@@ -47,20 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   }
   document.querySelector('#grabInput').addEventListener('click', grabInput);
-  document.querySelector('#showLocalStorage').addEventListener('click', showLocalStorage);
-  document.querySelector('#clearStrg').addEventListener('click', clearStrg);
+  
+  document.querySelector('#showLs').addEventListener('click', showLocalStorage);
+  document.querySelector('#wipeLs').addEventListener('click', clearStrg);
   document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
   document.querySelector('#debug').addEventListener('click', debugAction);
+  document.querySelector('#detectCyphers').addEventListener('click', detectCyphers);
 });
-function debugAction(){
-    log("debug fired");
-    $("#cypherOutput").val('');
-}
-
-function showBlurbs(){
-    log(getBlurbs());
-}
-
 function decrypt(cyphertextsFromBody){
 //TODO merge the loops into one
 //trimming the cyphertext indentifiers
@@ -112,10 +104,11 @@ function encrypt(value){
   $(document.getElementById('cypherOutput')).val(stringifiedEncryptionObjectToShare);
   // log("and back againt to test: "+ 
 
- var testBack = sjcl.decrypt(dataEn.password, stringifiedEncryptionObject);
- log("decrypted test: "+testBack);
- //we return it so that we have something do display in the text-copy box
- return stringifiedEncryptionObject
+  var testBack = sjcl.decrypt(dataEn.password, stringifiedEncryptionObject);
+  log("decrypted test: "+testBack);
+
+  //we return it so that we have something do display in the text-copy box
+  return stringifiedEncryptionObject
 }
 
 function filterBody(innerbody){
@@ -135,6 +128,19 @@ function grabInput(e) {
 
 
 // HELPERS 
+function detectCyphers(){
+    log(detectedCyphers);
+}
+
+function debugAction(){
+    log("debug fired");
+}
+
+function showBlurbs(){
+    log(getBlurbs());
+}
+
+
 function pid(){
     var S4 = function (){
         return Math.floor(

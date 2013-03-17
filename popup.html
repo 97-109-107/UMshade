@@ -11,10 +11,9 @@
   </head>
 <body>
     <!--<button id="grabInput">copy</button>--!>
-    <button id="showLocalStorage">show ls</button>
-    <button id="clearStrg">Clear ls</button>
-    <button id="showBlurbs">showBlurbs</button>
-    <button id="debug">debug button</button>
+    <!--<button id="showLocalStorage">show ls</button>--!>
+    <!--<button id="clearStrg">Clear ls</button>--!>
+    <!--<button id="showBlurbs">showBlurbs</button>--!>
     
 
 <table id="def" class="fixed">
@@ -50,10 +49,13 @@
 	
 	<table id="noBack" class="fixed">
 	<tr class="hideable">
-	<td><button onclick="alert(log())">show passphrases</button>
-	<button onclick="clearStrg();">clear passphrases</button></td><td>
-	<button onclick="showDetected();">show detected cyphers</button>
-	<button onclick="alert(getBlurbs());">show stored blurbs+passes </button>
+	    <td>
+	<!--<button id="showLs">show passphrases</button>--!>
+	<button id="showBlurbs">show blurbs</button>
+	<button id="wipeLs">clear localstorage</button></td><td>
+	<button id="showLs">show localstorage</button>
+    <button id="debug">debug button</button>
+    <button id="detectCyphers">detect cyphers</button>
 	</td></tr>
 	</table>
 	
