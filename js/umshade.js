@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // OR INPUT??
         if(msg.type == "textarea"){
           log("grabbed value:"+msg.value+" - and selection:"+msg.selection+" - from: "+msg.id);
-          encrypt(msg.value);
+          var cypherToCopy = encrypt(msg.value);
          }
       });
     })
@@ -50,7 +50,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#showLocalStorage').addEventListener('click', showLocalStorage);
   document.querySelector('#clearStrg').addEventListener('click', clearStrg);
   document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
+  document.querySelector('#debug').addEventListener('click', debugAction);
 });
+function debugAction(){
+    log("debug fired");
+    $("#cypherOutput").val('');
+}
 
 function showBlurbs(){
     log(getBlurbs());
@@ -78,7 +83,6 @@ for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
     log("decryptionResult: "+decryptionResult);
   }catch(e){
     };
-
   }
 };
 }
@@ -90,12 +94,13 @@ function encrypt(value){
   delete dataEn.ct;
   // adding the password which is generated from the pid
   dataEn.password = password;
-  dataEn.blurb = value.substring(0,25);
+  
+  //we create one without the blurb, for sharing 
+  stringifiedEncryptionObjectToShare = JSON.stringify(dataEn);
 
-  // this is to stored/exchanged
+  // this is to stored
+  dataEn.blurb = value.substring(0,25);
   stringifiedEncryptionObject = JSON.stringify(dataEn);
-  //TODO how to store blurbs of messages in localstorage for identifying what we want to share?
-  //minimizng manipulations on the strigified object.
 
   log("object looks like this: "+stringifiedEncryptionObject);
   log("cyphertext is: "+ cyphertext);
@@ -104,11 +109,13 @@ function encrypt(value){
   setItem(dataEn.password, stringifiedEncryptionObject);
 
   // TODO set the box with the cyphertext, copy to clipboard
-  // $(document.getElementById('cypherOutput')).val(cyphertext);
+  $(document.getElementById('cypherOutput')).val(stringifiedEncryptionObjectToShare);
   // log("and back againt to test: "+ 
 
  var testBack = sjcl.decrypt(dataEn.password, stringifiedEncryptionObject);
  log("decrypted test: "+testBack);
+ //we return it so that we have something do display in the text-copy box
+ return stringifiedEncryptionObject
 }
 
 function filterBody(innerbody){
@@ -123,6 +130,7 @@ function browserActionPressEvent() {
 
 function grabInput(e) {
   port.postMessage({command: "grabInput"}); 
+ 
 }
 
 

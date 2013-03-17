@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>My Awesome Popup!</title>
+    <script src="js/jquery-1.8.2.min.js"></script>
     <script src="js/sjcl.js"></script>
     <script src="js/localstorage.js"></script>
     <script src="js/json2.js"></script>
@@ -9,10 +10,11 @@
 <link rel="stylesheet" type="text/css" href="skin.css">
   </head>
 <body>
-    <button id="grabInput">copy</button>
+    <!--<button id="grabInput">copy</button>--!>
     <button id="showLocalStorage">show ls</button>
     <button id="clearStrg">Clear ls</button>
     <button id="showBlurbs">showBlurbs</button>
+    <button id="debug">debug button</button>
     
 
 <table id="def" class="fixed">
@@ -20,7 +22,7 @@
         <td colspan="2">Share openly.<a href="#" class="tooltip"><img src="img/help.png"><SPAN>The field below shows the encrypted version of what you wrote. You can post it anywhere and be quite sure that third parties won't understand it. When you click the button you will copy the secret to your clipbaord.</SPAN></a></td>
     </tr>
     <tr class="notHideable">
-        <td colspan="2"><input type="text" class="cypher" value="Cypher will be shown here." id="cypherOutput"><button id="copybutton"  onclick="copyTextToClipboard(cyphertext);addToStorage(passphrase, cyphertext, data);clearInput('cypherOutput');">Copy secret</button></td>
+        <td colspan="2"><input type="text" id="cypherOutput" class="cypher" value="Cypher will be shown here." ><button id="grabInput">Copy secret</button></td>
     </tr>
 	</table>
 	<table id="def" class="fixed">
