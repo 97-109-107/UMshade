@@ -335,3 +335,18 @@ float:left;}
 .right {text-align:right;
 float:right;
 }
+ul, li{
+margin: 0;
+margin-left:5px;
+padding: 0;
+list-style-type: none;
+}
+ul a{
+    text-decoration:none;
+}
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
+}

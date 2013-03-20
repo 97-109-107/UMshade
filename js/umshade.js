@@ -24,6 +24,12 @@ var port;
 // handle clicks and popup events
 document.addEventListener('DOMContentLoaded', function () {
   window.onload = function(){
+      //show stored blurbs for sharing - maybe needs reversing?
+      var tempBlurbs = getBlurbs().splice(0,6);
+      tempBlurbs.forEach(function(p){
+          $("#blurbs ul").append("<li><p class='alignleft'>Text on the left.</p><p class='alignright'>Text on the right.</p></li>");
+          copy("sss");
+      });
     // open communication
     chrome.tabs.getSelected(null,function(tab){
       port = chrome.tabs.connect(tab["id"]);
@@ -126,8 +132,20 @@ function grabInput(e) {
  
 }
 
-
 // HELPERS 
+function copy(str) {
+    var sandbox = $('#sandbox').val(str).select();
+    document.execCommand('copy');
+    sandbox.val('');
+}
+function copyTextToClipboard(text) {
+    //var copyFrom = $('<textarea/>');
+    copyFrom.text(text);
+    $('body').append(copyFrom);
+    copyFrom.select();
+    document.execCommand('copy');
+    copyFrom.remove();
+}
 function detectCyphers(){
     log(detectedCyphers);
 }
@@ -137,6 +155,7 @@ function debugAction(){
 }
 
 function showBlurbs(){
+    //TODO show blurbs, not objects
     log(getBlurbs());
 }
 

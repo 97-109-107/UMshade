@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>My Awesome Popup!</title>
+    <title>umshade popup</title>
     <script src="js/jquery-1.8.2.min.js"></script>
     <script src="js/sjcl.js"></script>
     <script src="js/localstorage.js"></script>
@@ -10,6 +10,7 @@
 <link rel="stylesheet" type="text/css" href="skin.css">
   </head>
 <body>
+    <textarea STYLE="z-index:999;position:absolute;width:0px;height:0px; opacity:0;" id="sandbox"></textarea>
     <!--<button id="grabInput">copy</button>--!>
     <!--<button id="showLocalStorage">show ls</button>--!>
     <!--<button id="clearStrg">Clear ls</button>--!>
@@ -30,8 +31,11 @@
         <a href="#" class="tooltip"><img src="img/help.png">
                 <SPAN>This area displays snippets of the last five things you encrypted. Clicking the buttons will copy the password to the corresponding secret. You should send the the password through other channels than the secret  by e-mail for example.
                 </SPAN>
-        </a> 
-
+            </a><br> 
+            <div id="blurbs">
+                <ul>
+                </ul>
+            </div>
     </td>
     </tr>
 	
