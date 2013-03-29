@@ -7,6 +7,7 @@ var password = pid().toString()+pid().toString();
 var passphrase = '' // password + salt and iv;
 var prekey = '---Message encrypted with Umshade---'
 // var keysep = ':::'
+var stringifiedEncryptionObjectToShare;
 var postkey = '---learn why on umshade.it---'
 var localstoragesep = '$$$'
 var once = true;
@@ -24,12 +25,13 @@ var port;
 // handle clicks and popup events
 document.addEventListener('DOMContentLoaded', function () {
   window.onload = function(){
+      //TODO FIX THIS MESS
       //show stored blurbs for sharing - maybe needs reversing?
-      var tempBlurbs = getBlurbs().splice(0,6);
-      tempBlurbs.forEach(function(p){
-          $("#blurbs ul").append("<li><p class='alignleft'>Text on the left.</p><p class='alignright'>Text on the right.</p></li>");
-          copy("sss");
-      });
+      //var tempBlurbs = getBlurbs();
+      //tempBlurbs.forEach(function(p){
+          //$("#blurbs ul").append("<li><p class='alignleft'>"+p.blurb.toString().replace(/^\s+|\s+$/g, '')+"</p><p class='alignright'>Text on the right.</p></li>");
+          //copy("sss");
+      //});
     // open communication
     chrome.tabs.getSelected(null,function(tab){
       port = chrome.tabs.connect(tab["id"]);
@@ -58,31 +60,34 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
   document.querySelector('#debug').addEventListener('click', debugAction);
   document.querySelector('#detectCyphers').addEventListener('click', detectCyphers);
+  document.querySelector('#testInput').addEventListener('click', setCypherOutput);
+  
+  //document.querySelector('#testInput').addEventListener('click', setInput('a'));
 });
 function decrypt(cyphertextsFromBody){
-//TODO merge the loops into one
-//trimming the cyphertext indentifiers
-for(var x = cyphertextsFromBody.length - 1; x >= 0; x--) {
-  cyphertextsFromBody[x]=cyphertextsFromBody[x].substring(prekey.length, cyphertextsFromBody[x].length-postkey.length);
-};
-
-//will try decrypting each with from localstorage, already parsed back into objects
-storedDecryptionObjects = listAllItems(true);
-for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
-    // test agains all known elements
-    for (var c = cyphertextsFromBody.length - 1; c >= 0; c--){
-  try{
-    // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
-    storedDecryptionObjects[i].ct = cyphertextsFromBody[c];
-    // turning it back into a json so the sjcl can handle it further
-    var tempJsonEncryptionDetails = JSON.stringify(storedDecryptionObjects[i]);
-
-    var decryptionResult = sjcl.decrypt(storedDecryptionObjects[i].password, tempJsonEncryptionDetails);
-    log("decryptionResult: "+decryptionResult);
-  }catch(e){
+    //TODO merge the loops into one
+    //trimming the cyphertext indentifiers
+    for(var x = cyphertextsFromBody.length - 1; x >= 0; x--) {
+      cyphertextsFromBody[x]=cyphertextsFromBody[x].substring(prekey.length, cyphertextsFromBody[x].length-postkey.length);
     };
-  }
-};
+
+    //will try decrypting each with from localstorage, already parsed back into objects
+    storedDecryptionObjects = listAllItems(true);
+    for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
+        // test agains all known elements
+        for (var c = cyphertextsFromBody.length - 1; c >= 0; c--){
+          try{
+            // inserting the ct back into the json - it was removed so the plate is actually broken when you pass the 'secret'
+            storedDecryptionObjects[i].ct = cyphertextsFromBody[c];
+            // turning it back into a json so the sjcl can handle it further
+            var tempJsonEncryptionDetails = JSON.stringify(storedDecryptionObjects[i]);
+
+            var decryptionResult = sjcl.decrypt(storedDecryptionObjects[i].password, tempJsonEncryptionDetails);
+            log("decryptionResult: "+decryptionResult);
+          }catch(e){
+            };
+      }
+    };
 }
 
 function encrypt(value){
@@ -107,7 +112,7 @@ function encrypt(value){
   setItem(dataEn.password, stringifiedEncryptionObject);
 
   // TODO set the box with the cyphertext, copy to clipboard
-  $(document.getElementById('cypherOutput')).val(stringifiedEncryptionObjectToShare);
+  $('#cypherOutput').val(stringifiedEncryptionObjectToShare);
   // log("and back againt to test: "+ 
 
   var testBack = sjcl.decrypt(dataEn.password, stringifiedEncryptionObject);
@@ -132,8 +137,15 @@ function grabInput(e) {
  
 }
 
+function setCypherOutput(newInput){
+    log('set input fired!');
+    if(stringifiedEncryptionObjectToShare!=null){
+        log(stringifiedEncryptionObjectToShare);
+    }
+log($('#cypherOutput').val());
+}
 // HELPERS 
-function copy(str) {
+function copy(str){
     var sandbox = $('#sandbox').val(str).select();
     document.execCommand('copy');
     sandbox.val('');

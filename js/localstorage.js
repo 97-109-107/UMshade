@@ -37,13 +37,13 @@ function listAllItems(parsed){
     }
     log("Returning value: " + value);
     return value;
-  }
+}
   function getBlurbs(){
 	// returns the past messages that were encrypted and the keys to them
 	  var templog = [];
 	  for(i=0; i<=localStorage.length-1; i++){  
 	        key = localStorage.key(i);  
-	        var blurb = JSON.parse(localStorage.getItem(key)).blurb
+	        var blurb = JSON.parse(localStorage.getItem(key))
 			//if(blurb[3]!="dummy" && blurb[3]!=null){
                 templog.push(blurb);
 			//}
