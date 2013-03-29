@@ -43,12 +43,14 @@ document.addEventListener('DOMContentLoaded', function () {
       port.onMessage.addListener(function(msg){
         if(msg.type == "body"){
           detectedCyphers = filterBody(msg.value);
-          //decrypt(detectedCyphers);
-    }
+          log(detectedCyphers);
+          decrypt(detectedCyphers);
+        }
         // OR INPUT??
         if(msg.type == "textarea"){
           log("grabbed value:"+msg.value+" - and selection:"+msg.selection+" - from: "+msg.id);
-          var cypherToCopy = encrypt(msg.value);
+          encrypt(msg.value);
+          //var cypherToCopy = encrypt(msg.value);
          }
       });
     })
@@ -111,15 +113,15 @@ function encrypt(value){
   //the password is the arm, is there anything better?
   setItem(dataEn.password, stringifiedEncryptionObject);
 
-  // TODO set the box with the cyphertext, copy to clipboard
-  $('#cypherOutput').val(stringifiedEncryptionObjectToShare);
-  // log("and back againt to test: "+ 
-
+  // set the box with the cyphertext, copy to clipboard
+  setCypherOutput(stringifiedEncryptionObjectToShare);
+  copyTextToClipboard(stringifiedEncryptionObjectToShare);
+  
   var testBack = sjcl.decrypt(dataEn.password, stringifiedEncryptionObject);
   log("decrypted test: "+testBack);
 
-  //we return it so that we have something do display in the text-copy box
-  return stringifiedEncryptionObject
+  //TODO do we need to return anything?
+  //return stringifiedEncryptionObject;
 }
 
 function filterBody(innerbody){
@@ -138,11 +140,9 @@ function grabInput(e) {
 }
 
 function setCypherOutput(newInput){
-    log('set input fired!');
     if(stringifiedEncryptionObjectToShare!=null){
-        log(stringifiedEncryptionObjectToShare);
+        $('#cypherOutput').val(stringifiedEncryptionObjectToShare);
     }
-log($('#cypherOutput').val());
 }
 // HELPERS 
 function copy(str){
@@ -151,7 +151,7 @@ function copy(str){
     sandbox.val('');
 }
 function copyTextToClipboard(text) {
-    //var copyFrom = $('<textarea/>');
+    var copyFrom = $('<textarea/>');
     copyFrom.text(text);
     $('body').append(copyFrom);
     copyFrom.select();
