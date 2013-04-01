@@ -6,8 +6,8 @@ var regex = /(?:ct":")(.*)"}/g;
 var password = pid().toString()+pid().toString();
 var passphrase = '' // password + salt and iv;
 var prekey = '---Message encrypted with Umshade---'
-// var keysep = ':::'
 var stringifiedEncryptionObjectToShare;
+var stringifiedEncryptionObjectToShareHolder= []; 
 var postkey = '---learn why on umshade.it---'
 var localstoragesep = '$$$'
 var once = true;
@@ -25,20 +25,24 @@ var port;
 // handle clicks and popup events
 document.addEventListener('DOMContentLoaded', function () {
   window.onload = function(){
-      //TODO FIX THIS MESS
       //show stored blurbs for sharing - maybe needs reversing?
-      //var tempBlurbs = getBlurbs();
-      //tempBlurbs.forEach(function(p){
-          //$("#blurbs ul").append("<li><p class='alignleft'>"+p.blurb.toString().replace(/^\s+|\s+$/g, '')+"</p><p class='alignright'>Text on the right.</p></li>");
-          //copy("sss");
-      //});
+      var tempBlurbs = getBlurbs().slice(0,4);
+      var tempCounter = 0;
+      tempBlurbs.forEach(function(p){
+          try{
+              $("#blurbs ul").append("<a href='' id=getBlurb"+tempCounter+"><li>"+p.blurb+"</li></a>");
+              stringifiedEncryptionObjectToShareHolder.push(p.blurb);
+              tempCounter += 1;
+          }catch(e){
+          }
+      });
     // open communication
     chrome.tabs.getSelected(null,function(tab){
       port = chrome.tabs.connect(tab["id"]);
 
       // the popup is loaded == the button has been clicked so, fetch the websites contents
       browserActionPressEvent();
-
+      
       //handle listening
       port.onMessage.addListener(function(msg){
         if(msg.type == "body"){
@@ -46,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
           log(detectedCyphers);
           decrypt(detectedCyphers);
         }
-        // OR INPUT??
+        // or input
         if(msg.type == "textarea"){
           log("grabbed value:"+msg.value+" - and selection:"+msg.selection+" - from: "+msg.id);
           encrypt(msg.value);
@@ -54,17 +58,21 @@ document.addEventListener('DOMContentLoaded', function () {
          }
       });
     })
-  }
   document.querySelector('#grabInput').addEventListener('click', grabInput);
-  
   document.querySelector('#showLs').addEventListener('click', showLocalStorage);
   document.querySelector('#wipeLs').addEventListener('click', clearStrg);
   document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
   document.querySelector('#debug').addEventListener('click', debugAction);
   document.querySelector('#detectCyphers').addEventListener('click', detectCyphers);
-  document.querySelector('#testInput').addEventListener('click', setCypherOutput);
+  //document.querySelector('#testInput').addEventListener('click', setCypherOutput);
+  //for(var s=stringifiedEncryptionObjectToShareHolder.length; s<stringifiedEncryptionObjectToShareHolder.length; s++){
+      //log('--'+s);
+      //document.querySelector('#getBlurb'+s).addEventListener('click', log('this'));
+      //function(){copyTextToClipboard("sss")});
+  //}
   
   //document.querySelector('#testInput').addEventListener('click', setInput('a'));
+  }
 });
 function decrypt(cyphertextsFromBody){
     //TODO merge the loops into one
@@ -75,7 +83,7 @@ function decrypt(cyphertextsFromBody){
 
     //will try decrypting each with from localstorage, already parsed back into objects
     storedDecryptionObjects = listAllItems(true);
-    for (var i = storedDecryptionObjects.length - 1; i >= 0; i--) {
+    for (var i = storedDecryptionObjects.length - 0; i >= 0; i--) {
         // test agains all known elements
         for (var c = cyphertextsFromBody.length - 1; c >= 0; c--){
           try{
