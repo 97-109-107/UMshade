@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
       tempBlurbs.forEach(function(p){
           try{
               $("#blurbs ul").append("<a href='' id=getBlurb"+tempCounter+"><li>"+p.blurb+"</li></a>");
-              stringifiedEncryptionObjectToShareHolder.push(p.blurb);
+              stringifiedEncryptionObjectToShareHolder.push(p.password);
               tempCounter += 1;
           }catch(e){
           }
@@ -58,22 +58,32 @@ document.addEventListener('DOMContentLoaded', function () {
          }
       });
     })
-  document.querySelector('#grabInput').addEventListener('click', grabInput);
+
+  //document.querySelector('#getBlurb').addEventListener('click', function(){ copyTextToClipboard();
+  //document.querySelector('#testInput').addEventListener('click', setCypherOutput);
+  //document.querySelector('#testInput').addEventListener('click', setInput('a'));
+  //
+  
+  // document.querySelector('#grabInput').addEventListener('click', grabInput);
   document.querySelector('#showLs').addEventListener('click', showLocalStorage);
   document.querySelector('#wipeLs').addEventListener('click', clearStrg);
   document.querySelector('#showBlurbs').addEventListener('click', showBlurbs);
   document.querySelector('#debug').addEventListener('click', debugAction);
   document.querySelector('#detectCyphers').addEventListener('click', detectCyphers);
-  //document.querySelector('#testInput').addEventListener('click', setCypherOutput);
-  //for(var s=stringifiedEncryptionObjectToShareHolder.length; s<stringifiedEncryptionObjectToShareHolder.length; s++){
-      //log('--'+s);
-      //document.querySelector('#getBlurb'+s).addEventListener('click', log('this'));
-      //function(){copyTextToClipboard("sss")});
-  //}
   
-  //document.querySelector('#testInput').addEventListener('click', setInput('a'));
+  for(var s=0; s<stringifiedEncryptionObjectToShareHolder.length; s++){
+      console.log('--'+s);
+      console.log(stringifiedEncryptionObjectToShareHolder[s]);
+      document.querySelector('#getBlurb'+s).addEventListener('click', function(){testCopy(s)});
+      //function(){copyTextToClipboard("sss")});
+  }
+  
   }
 });
+function testCopy(arg){
+    log(arg);
+    
+}
 function decrypt(cyphertextsFromBody){
     //TODO merge the loops into one
     //trimming the cyphertext indentifiers
@@ -139,6 +149,7 @@ function filterBody(innerbody){
 
 function browserActionPressEvent() {
       // get textarea textbox for encryption
+      grabInput();
       port.postMessage({command: "fetch_body"}); 
 };
 
@@ -149,7 +160,8 @@ function grabInput(e) {
 
 function setCypherOutput(newInput){
     if(stringifiedEncryptionObjectToShare!=null){
-        $('#cypherOutput').val(stringifiedEncryptionObjectToShare);
+      log("trying to set the box");
+      $('#cypherOutput').val(stringifiedEncryptionObjectToShare);
     }
 }
 // HELPERS 
